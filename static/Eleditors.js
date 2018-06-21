@@ -1,6 +1,6 @@
 /**
 * Version: 1.8.5
-* Title: Eleditor 绉诲姩绔瘜鏂囨湰缂栬緫鍣�
+* Title: Eleditor 移动端富文本编辑器
 * Site: https://eleditor.fixel.cn
 * Doc: http://doc.eleditor.fixel.cn
 * Author: Try
@@ -10,21 +10,21 @@
 	var _namespace = 'Eleditor';
 	var _notctname = ['INPUT', 'IMG', 'TEXTAREA'];
 	var _toolnames = { 
-		insertText: '鎻掓枃瀛�',
-		insertImage: '鎻掑浘鐗�',
-		insertLink: '鎻掗摼鎺�',
-		insertHr: '姘村钩绾�',
-		editText: '鏀规枃瀛�',
-		"delete": '鍒犻櫎',
-		undo: '鎾ら攢',
-		cancel: '鍙栨秷',
+		insertText: '插文字',
+		insertImage: '插图片',
+		insertLink: '插链接',
+		insertHr: '水平线',
+		editText: '改文字',
+		"delete": '删除',
+		undo: '撤销',
+		cancel: '取消',
 	};
 	var _editorTpl = '';
 	
 	w[_namespace] = function(){};
 
 	if( typeof jQuery === 'undefined' && typeof Zepto === 'undefined' ){
-		return console.warn('|--Eleditor 璇峰紩鍏Query鎴栬€匷epto锛佹ā鍧楀寲鐜璇锋妸渚濊禆鍏ㄥ眬瀹夎');
+		return console.warn('|--Eleditor 请引入jQuery或者Zepto！模块化环境请把依赖全局安装');
 	}else if( typeof $ === 'undefined' ){
 		var $ = typeof jQuery != 'undefined' ? jQuery : Zepto;
 	}
@@ -55,7 +55,7 @@
 	};
 	var _getLayerMaxZIndex = function(){
 	    var _max = Math.max.apply(null, 
-	    銆€銆€$.map($('body *'), function(e) {
+	    　　$.map($('body *'), function(e) {
 	    		var _$e = $(e);
 				if (_$e.css('position') != 'static')
 					return parseInt(_$e.css('z-index')) || 1;
@@ -154,9 +154,9 @@
 							</ul>\
 						</div>\
 						<div class="Eleditor-textEditor-fontsizes">\
-							<div class="Eleditor-textEditor-modulePane"><span>瀛椾綋澶у皬</span></div>\
+							<div class="Eleditor-textEditor-modulePane"><span>字体大小</span></div>\
 							<ul>\
-								<li class="Eleditor-inheritValue">榛樿</li>\
+								<li class="Eleditor-inheritValue">默认</li>\
 								<li>14px</li>\
 								<li>16px</li>\
 								<li>20px</li>\
@@ -165,9 +165,9 @@
 							</ul>\
 						</div>\
 						<div class="Eleditor-textEditor-lineheight">\
-							<div class="Eleditor-textEditor-modulePane"><span>琛岄珮</span></div>\
+							<div class="Eleditor-textEditor-modulePane"><span>行高</span></div>\
 							<ul>\
-								<li class="Eleditor-inheritValue">榛樿</li>\
+								<li class="Eleditor-inheritValue">默认</li>\
 								<li>20px</li>\
 								<li>25px</li>\
 								<li>30px</li>\
@@ -176,12 +176,12 @@
 							</ul>\
 						</div>\
 						<div class="Eleditor-textEditor-linedecorations">\
-							<div class="Eleditor-textEditor-modulePane"><span>鏂囨湰淇グ</span></div>\
+							<div class="Eleditor-textEditor-modulePane"><span>文本修饰</span></div>\
 							<ul>\
-								<li class="Eleditor-inheritValue">鏃�</li>\
-								<li style="text-decoration: overline">涓婂垝绾夸慨楗�</li>\
-								<li style="text-decoration: line-through">鍒犻櫎绾夸慨楗�</li>\
-								<li style="text-decoration: underline">涓嬪垝绾夸慨楗�</li>\
+								<li class="Eleditor-inheritValue">无</li>\
+								<li style="text-decoration: overline">上划线修饰</li>\
+								<li style="text-decoration: line-through">删除线修饰</li>\
+								<li style="text-decoration: underline">下划线修饰</li>\
 							</ul>\
 						</div>\
 						<div class="Eleditor-textEditor-formats">\
@@ -189,19 +189,19 @@
 							<div class="Eleditor-textEditor-clean"></div>\
 						</div>\
 						<div class="Eleditor-inputarea">\
-							<input placeholder="璇疯緭鍏ヨ秴閾炬帴" type="text" />\
-							<div placeholder="鐐瑰嚮杈撳叆鍐呭" class="textarea" contenteditable="true"></div>\
+							<input placeholder="请输入超链接" type="text" />\
+							<div placeholder="点击输入内容" class="textarea" contenteditable="true"></div>\
 						</div>\
 						<div class="Eleditor-method">\
-							<button class="Eleditor-commit">鎻愪氦</button>\
-							<button class="Eleditor-cancel">鍙栨秷</button>\
+							<button class="Eleditor-commit">提交</button>\
+							<button class="Eleditor-cancel">取消</button>\
 						</div>\
 					</div>\
 					<div class="Eleditor-delete-layer">\
-						<div class="Eleditor-delete-tip">杩涘叆鎵归噺鍒犻櫎妯″紡锛岀偣鍑绘钀借繘琛屽垹闄�</div>\
+						<div class="Eleditor-delete-tip">进入批量删除模式，点击段落进行删除</div>\
 						<div class="Eleditor-delete-revoke"></div>\
 						<div class="Eleditor-delete-clear"></div>\
-						<div class="Eleditor-delete-back">杩斿洖缁х画缂栬緫</div>\
+						<div class="Eleditor-delete-back">返回继续编辑</div>\
 					</div>\
 				</div>';
 		return _html;
@@ -219,7 +219,7 @@
 			// _undolen = isNaN(_args._undolen) ? 10 : _args._undolen;
 			_editorUid = _genEditorUid(),
 			_historys = [],
-			_placeHolder = _args.placeHolder || '<p class="Eleditor-placeholder">鐐瑰嚮姝ゅ缂栬緫鍐呭</p>',
+			_placeHolder = _args.placeHolder || '<p class="Eleditor-placeholder">点击此处编辑内容</p>',
 			_uploadRole = null;
 
 		if( _args.toolbars.length === 0 ){
@@ -241,7 +241,7 @@
 			var _$wrap = $(_args.el);
 			
 			if( _$wrap.length === 0 ){
-				return console.warn('|--Eleditor '+_args.el+'鍏冪礌涓嶅瓨鍦紝璇峰湪DOMContentLoaded鍚庡垵濮嬪寲Eleditor');
+				return console.warn('|--Eleditor '+_args.el+'元素不存在，请在DOMContentLoaded后初始化Eleditor');
 			}else if( _$wrap.length != 1 ){
 				var _$wrap = $(_$wrap[0]);
 			}
@@ -249,7 +249,7 @@
 		}
 
 		if( _$wrap.attr('Eleditor-Inited') === 'true' ){
-			return console.warn('|--Eleditor '+_args.el+'宸茬粡缁戝畾浜咵leditor');
+			return console.warn('|--Eleditor '+_args.el+'已经绑定了Eleditor');
 		}
 
 		_$wrap.attr({'Eleditor-Inited': 'true', 'Eleditor-Uid': _editorUid});
@@ -453,15 +453,15 @@
 						    fileVal: _args.upload.formName,
 						});
 			_imageUploader.on( 'uploadStart', function( _file, _percentage ) {
-			    _showLoadingMask('涓婁紶鍥剧墖涓�<span id="uploadProgress">1</span>%');
+			    _showLoadingMask('上传图片中<span id="uploadProgress">1</span>%');
 			});		
 			_imageUploader.on( 'uploadProgress', function( _file, _percentage ) {
 			    $('#uploadProgress').html( parseFloat((_percentage * 100).toFixed(2)) );
 			});
 			// _uploadRole
 			_imageUploader.on( 'error', function() {
-			    if( arguments[0]=="Q_TYPE_DENIED" ) w.alert("璇蜂笂浼犲浘鐗囨牸寮忔枃浠�");
-		        if( arguments[0]=="F_EXCEED_SIZE" ) w.alert("鏂囦欢澶у皬涓嶈兘瓒呰繃"+(arguments[1] / 1048576)+"M");
+			    if( arguments[0]=="Q_TYPE_DENIED" ) w.alert("请上传图片格式文件");
+		        if( arguments[0]=="F_EXCEED_SIZE" ) w.alert("文件大小不能超过"+(arguments[1] / 1048576)+"M");
 			});
 			_imageUploader.on( 'uploadComplete', function() { _hideLoadingMask(); });			
 			_imageUploader.on( 'uploadSuccess', function( _file, _call ) {
@@ -483,7 +483,7 @@
 					}
 					_args.changer();
 			    }else{
-			    	w.alert('涓婁紶澶辫触锛歔'+_call.msg+']');
+			    	w.alert('上传失败：['+_call.msg+']');
 			    }
 			    if( !_hasStyleBarBtn ){
 			    	_hideEditorControllerLayer();
@@ -515,11 +515,11 @@
 						}
 						_args.changer();
 					}, function(_err){
-						w.alert('涓婁紶澶辫触锛歔'+_err+']');
+						w.alert('上传失败：['+_err+']');
 					});
 				}catch(_e){
 					console.warn(_e);
-					console.warn('|--Eleditor 璇锋鏌ploader鍑芥暟杩斿洖鏄惁鏄爣鍑哖romise瀵硅薄锛�');
+					console.warn('|--Eleditor 请检查uploader函数返回是否是标准Promise对象！');
 				}
 
 			}
@@ -542,7 +542,7 @@
 			},
 			insertImage: function(){
 				if( typeof WebUploader === 'undefined' && typeof _args.uploader != 'function' ){
-					window.alert('涓婁紶鍙傛暟鏈畾涔�.');
+					window.alert('上传参数未定义.');
 				}
 			},
 			insertHr: function(){
@@ -609,7 +609,7 @@
 		});
 		_$editorDeleteLayer.on('click', '.Eleditor-delete-clear', function() {
 
-			if( !confirm('纭畾娓呯┖鍐呭鍚楋紵') ){
+			if( !confirm('确定清空内容吗？') ){
 				return;
 			}
 
@@ -639,7 +639,7 @@
 		_$editorTextModule.on('click', '.Eleditor-textStyle-color,.Eleditor-textStyle-bgColor', function() {
 			var _$this = $(this);
 			var _role = _$this.hasClass('Eleditor-textStyle-bgColor') ? 'bgcolor' : 'color';
-			_$editorColorModule.find('.Eleditor-textEditor-modulePane span').html(_role == 'bgcolor' ? '鏂囧瓧鑳屾櫙棰滆壊' : '鏂囧瓧棰滆壊');
+			_$editorColorModule.find('.Eleditor-textEditor-modulePane span').html(_role == 'bgcolor' ? '文字背景颜色' : '文字颜色');
 			_$editorColorModule.attr('role', _role).show();
 			$(this).addClass('Eleditor-active');
 		});
@@ -705,7 +705,7 @@
 		});
 
 		_$editorTextModule.on('click', ".Eleditor-textEditor-clean", function() {
-			confirm('纭畾娓呯┖鍐呭锛堜笉鍙仮澶嶏級锛�') && _$editorTextArea.html("");
+			confirm('确定清空内容（不可恢复）？') && _$editorTextArea.html("");
 		});
 
 		_$editorTextModule.on('click', ".Eleditor-cancel,.Eleditor-commit", function() {
@@ -719,7 +719,7 @@
 				var _hasPlaceHolder = _$selected.hasClass('Eleditor-placeholder');
 
 				if( !_content ){
-					return alert('璇疯緭鍏ュ唴瀹规枃瀛�');
+					return alert('请输入内容文字');
 				}
 
 				_appendHistory();
